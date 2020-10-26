@@ -1,7 +1,7 @@
 import { Nullable } from '@tager/admin-services';
 import { OptionType } from '@tager/admin-ui';
 
-import { RoleType, ScopeType } from '../../typings/model';
+import { RoleType, ScopeGroupsData } from '../../typings/model';
 import {
   RoleCreationPayload,
   RoleUpdatePayload,
@@ -13,10 +13,7 @@ export type FormValues = {
   isSuperAdmin: boolean;
 };
 
-export function convertRoleToFormValues(
-  role: Nullable<RoleType>,
-  scopeOptionList: Array<OptionType>
-): FormValues {
+export function convertRoleToFormValues(role: Nullable<RoleType>): FormValues {
   if (!role) {
     return {
       name: '',
@@ -25,14 +22,10 @@ export function convertRoleToFormValues(
     };
   }
 
-  const currentScopeOptionList = scopeOptionList.filter((scope) =>
-    role.scopes.some((scopes) => scopes.value === scope.value)
-  );
-
   return {
-    name: role.name ?? '',
-    scopes: currentScopeOptionList,
-    isSuperAdmin: role.isSuperAdmin ?? false,
+    name: role.name,
+    scopes: role.scopes,
+    isSuperAdmin: role.isSuperAdmin,
   };
 }
 
@@ -40,7 +33,7 @@ export function convertFormValuesToRoleCreationPayload(
   values: FormValues
 ): RoleCreationPayload {
   return {
-    name: values.name ?? null,
+    name: values.name,
     scopes: values.scopes.map((scope) => scope.value),
   };
 }
@@ -54,14 +47,14 @@ export function convertFormValuesToRoleUpdatePayload(
 }
 
 export function convertScopeDataToOptions(
-  scopeData: Nullable<ScopeType>
+  scopeData: Nullable<ScopeGroupsData>
 ): Array<OptionType> {
   if (!scopeData) return [];
   return scopeData.groups
     .map((group) =>
       group.scopes.map((scope) => ({
         value: scope.value,
-        label: `${group.name}: ${scope.name}`,
+        label: `${group.name}: ${scope.label}`,
       }))
     )
     .flat();

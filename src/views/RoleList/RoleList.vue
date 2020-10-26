@@ -16,9 +16,10 @@
         :error-message="errorMessage"
       >
         <template v-slot:cell(scopes)="{ row }">
-          <ul>
-            <li v-for="scopes of row.scopes" :key="scopes.name">
-              {{ !row.isSuperAdmin ? scopes.label : 'All' }}
+          <span v-if="row.isSuperAdmin">All</span>
+          <ul v-else>
+            <li v-for="scopes of row.scopes" :key="scopes.value">
+              {{ scopes.label }}
             </li>
           </ul>
         </template>
@@ -47,14 +48,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted } from '@vue/composition-api';
+import { defineComponent, onMounted } from '@vue/composition-api';
 
 import { useResource, useResourceDelete } from '@tager/admin-services';
 import { ColumnDefinition } from '@tager/admin-ui';
 
 import { RoleType } from '../../typings/model';
-import { getRoleFormUrl } from '../../constants/paths';
 import { deleteRole, getRoleList } from '../../services/requests';
+import { getRoleFormUrl } from '../../utils/paths';
 
 const COLUMN_DEFS: Array<ColumnDefinition<RoleType>> = [
   {
@@ -88,6 +89,7 @@ export default defineComponent({
       context,
       resourceName: 'Role list',
     });
+
     onMounted(() => {
       fetchRoleList();
     });
@@ -102,14 +104,14 @@ export default defineComponent({
       context,
     });
 
-    const isRowDataLoading = computed<boolean>(() => isRoleLoading.value);
     function isBusy(roleId: number): boolean {
-      return isDeleting(roleId) || isRowDataLoading.value;
+      return isDeleting(roleId) || isRoleLoading.value;
     }
+
     return {
       columnDefs: COLUMN_DEFS,
       rowData: roleList,
-      isRowDataLoading,
+      isRowDataLoading: isRoleLoading,
       errorMessage: error,
       isBusy,
       handleRoleDelete,
@@ -119,4 +121,4 @@ export default defineComponent({
 });
 </script>
 
-<style roled></style>
+<style></style>

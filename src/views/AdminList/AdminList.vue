@@ -52,8 +52,8 @@ import { useResource, useResourceDelete } from '@tager/admin-services';
 import { ColumnDefinition } from '@tager/admin-ui';
 
 import { AdminType } from '../../typings/model';
-import { getAdminFormUrl } from '../../constants/paths';
 import { deleteAdmin, getAdminList } from '../../services/requests';
+import { getAdminFormUrl } from '../../utils/paths';
 
 const COLUMN_DEFS: Array<ColumnDefinition<AdminType>> = [
   {
@@ -92,6 +92,7 @@ export default defineComponent({
       context,
       resourceName: 'Admin list',
     });
+
     onMounted(() => {
       fetchAdminList();
     });
@@ -106,14 +107,13 @@ export default defineComponent({
       context,
     });
 
-    const isRowDataLoading = computed<boolean>(() => isAdminLoading.value);
     function isBusy(adminId: number): boolean {
-      return isDeleting(adminId) || isRowDataLoading.value;
+      return isDeleting(adminId) || isAdminLoading.value;
     }
     return {
       columnDefs: COLUMN_DEFS,
       rowData: adminList,
-      isRowDataLoading,
+      isRowDataLoading: isAdminLoading,
       errorMessage: error,
       isBusy,
       handleAdminDelete,

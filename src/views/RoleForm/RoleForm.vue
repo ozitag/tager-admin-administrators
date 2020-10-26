@@ -45,14 +45,14 @@ import {
 } from '@tager/admin-services';
 import { OptionType } from '@tager/admin-ui';
 
-import { getRoleListUrl } from '../../constants/paths';
 import {
   createRole,
   getRole,
-  getScopeData,
+  getScopes,
   updateRole,
 } from '../../services/requests';
-import { RoleType, ScopeType } from '../../typings/model';
+import { RoleType, ScopeGroupsData } from '../../typings/model';
+import { getRoleListUrl } from '../../utils/paths';
 
 import {
   convertFormValuesToRoleCreationPayload,
@@ -75,15 +75,15 @@ export default defineComponent({
       fetchResource: () => getRole(roleId.value),
       initialValue: null,
       context,
-      resourceName: 'role',
+      resourceName: 'Role',
     });
 
     /** Fetch scope list */
     const [
       fetchScopeData,
       { data: scopeData, loading: isScopeDataLoading },
-    ] = useResource<Nullable<ScopeType>>({
-      fetchResource: getScopeData,
+    ] = useResource<Nullable<ScopeGroupsData>>({
+      fetchResource: getScopes,
       initialValue: null,
       context,
       resourceName: 'Scope list',
@@ -102,15 +102,13 @@ export default defineComponent({
       convertScopeDataToOptions(scopeData.value)
     );
 
-    const values = ref<FormValues>(
-      convertRoleToFormValues(role.value, scopeOptionList.value)
-    );
+    const values = ref<FormValues>(convertRoleToFormValues(role.value));
 
     const errors = ref<Record<string, string>>({});
     const isSubmitting = ref<boolean>(false);
 
     watch(role, () => {
-      values.value = convertRoleToFormValues(role.value, scopeOptionList.value);
+      values.value = convertRoleToFormValues(role.value);
     });
 
     /** Submit Form */

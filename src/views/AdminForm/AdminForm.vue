@@ -26,7 +26,7 @@
           v-model="values.roles"
           name="roles"
           label="Roles"
-          :options="scopeOptionList"
+          :options="roleOptionList"
           :error="errors.roles"
         />
         <form-field
@@ -58,13 +58,13 @@ import {
 import { OptionType } from '@tager/admin-ui';
 
 import { AdminType, RoleType } from '../../typings/model';
-import { getAdminListUrl } from '../../constants/paths';
 import {
   createAdmin,
   getAdmin,
   getRoleList,
   updateAdmin,
 } from '../../services/requests';
+import { getAdminListUrl } from '../../utils/paths';
 
 import {
   convertFormValuesToAdminCreationPayload,
@@ -87,7 +87,7 @@ export default defineComponent({
       fetchResource: () => getAdmin(adminId.value),
       initialValue: null,
       context,
-      resourceName: 'admin',
+      resourceName: 'Admin',
     });
 
     /** Fetch role list */
@@ -110,12 +110,12 @@ export default defineComponent({
     });
 
     /** Role Options */
-    const scopeOptionList = computed<Array<OptionType<number>>>(() =>
+    const roleOptionList = computed<Array<OptionType<number>>>(() =>
       convertRoleListToOptions(roleList.value)
     );
 
     const values = ref<FormValues>(
-      convertAdminToFormValues(admin.value, scopeOptionList.value)
+      convertAdminToFormValues(admin.value, roleOptionList.value)
     );
 
     const errors = ref<Record<string, string>>({});
@@ -124,7 +124,7 @@ export default defineComponent({
     watch(admin, () => {
       values.value = convertAdminToFormValues(
         admin.value,
-        scopeOptionList.value
+        roleOptionList.value
       );
     });
 
@@ -187,7 +187,7 @@ export default defineComponent({
       admin,
       pageTitle,
       isCreation,
-      scopeOptionList,
+      roleOptionList,
     };
   },
 });

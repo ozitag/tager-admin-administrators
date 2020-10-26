@@ -5,7 +5,7 @@ import {
   getAdminListUrl,
   getRoleFormUrl,
   getRoleListUrl,
-} from './paths';
+} from '../utils/paths';
 
 export const PAGES_MENU_ITEM: MenuItemType = {
   id: 'admins',

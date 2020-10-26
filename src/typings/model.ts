@@ -1,20 +1,19 @@
+export type ScopeType = {
+  readonly value: string;
+  readonly label: string;
+};
+
 export type RoleType = {
   readonly id: number;
   readonly name: string;
   readonly isSuperAdmin: boolean;
-  readonly scopes: Array<{
-    readonly value: string;
-    readonly label: string;
-  }>;
+  readonly scopes: Array<ScopeType>;
 };
 
-export type ScopeType = {
+export type ScopeGroupsData = {
   readonly groups: Array<{
     readonly name: string;
-    scopes: Array<{
-      readonly value: string;
-      readonly name: string;
-    }>;
+    readonly scopes: Array<ScopeType>;
   }>;
 };
 

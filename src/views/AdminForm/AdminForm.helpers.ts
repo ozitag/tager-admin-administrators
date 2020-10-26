@@ -1,7 +1,7 @@
 import { Nullable } from '@tager/admin-services';
 import { OptionType } from '@tager/admin-ui';
 
-import { AdminType, RoleType, ScopeType } from '../../typings/model';
+import { AdminType, RoleType, ScopeGroupsData } from '../../typings/model';
 import {
   AdminCreationPayload,
   AdminUpdatePayload,
@@ -26,15 +26,15 @@ export function convertAdminToFormValues(
       roles: [],
     };
   }
-  const currentScopeOptionList = roleOptionList.filter((role) =>
+  const currentRoleOptionList = roleOptionList.filter((role) =>
     admin.roles.some((roles) => roles.id === role.value)
   );
 
   return {
-    name: admin.name ?? '',
-    email: admin.email ?? '',
-    password: admin.password ?? '',
-    roles: currentScopeOptionList,
+    name: admin.name,
+    email: admin.email,
+    password: admin.password,
+    roles: currentRoleOptionList,
   };
 }
 
@@ -42,8 +42,8 @@ export function convertFormValuesToAdminUpdatePayload(
   values: FormValues
 ): AdminUpdatePayload {
   return {
-    name: values.name ?? null,
-    email: values.email ?? null,
+    name: values.name,
+    email: values.email,
     roles: values.roles.map((role) => role.value),
   };
 }
@@ -52,7 +52,7 @@ export function convertFormValuesToAdminCreationPayload(
   values: FormValues
 ): AdminCreationPayload {
   return {
-    password: values.password ?? undefined,
+    password: values.password,
     ...convertFormValuesToAdminUpdatePayload(values),
   };
 }

@@ -1,17 +1,10 @@
 import { request, ResponseBody } from '@tager/admin-services';
 
-import { AdminType, RoleType, ScopeType } from '../typings/model';
+import { AdminType, RoleType, ScopeGroupsData } from '../typings/model';
 
 type SuccessData = { success: boolean };
 
 /** Roles */
-
-export type RoleCreationPayload = {
-  name: string;
-  scopes: Array<string>;
-};
-
-export type RoleUpdatePayload = RoleCreationPayload;
 
 export function getRoleList(): Promise<ResponseBody<Array<RoleType>>> {
   return request.get({ path: '/admin/rbac/roles' });
@@ -23,11 +16,18 @@ export function getRole(
   return request.get({ path: `/admin/rbac/roles/${roleId}` });
 }
 
+export type RoleCreationPayload = {
+  name: string;
+  scopes: Array<string>;
+};
+
 export function createRole(
   payload: RoleCreationPayload
 ): Promise<ResponseBody<RoleType>> {
   return request.post({ path: '/admin/rbac/roles', body: payload });
 }
+
+export type RoleUpdatePayload = RoleCreationPayload;
 
 export function updateRole(
   roleId: string | number,
@@ -42,21 +42,11 @@ export function deleteRole(roleId: string | number): Promise<SuccessData> {
 
 /** Scopes */
 
-export function getScopeData(): Promise<ResponseBody<ScopeType>> {
+export function getScopes(): Promise<ResponseBody<ScopeGroupsData>> {
   return request.get({ path: '/admin/rbac/scopes' });
 }
 
 /** Admin */
-
-export type AdminUpdatePayload = {
-  name: string;
-  email: string;
-  roles: Array<number>;
-};
-
-export type AdminCreationPayload = AdminUpdatePayload & {
-  password: string;
-};
 
 export function getAdminList(): Promise<ResponseBody<Array<AdminType>>> {
   return request.get({ path: '/admin/admins' });
@@ -67,6 +57,16 @@ export function getAdmin(
 ): Promise<ResponseBody<AdminType>> {
   return request.get({ path: `/admin/admins/${adminId}` });
 }
+
+export type AdminUpdatePayload = {
+  name: string;
+  email: string;
+  roles: Array<number>;
+};
+
+export type AdminCreationPayload = AdminUpdatePayload & {
+  password: string;
+};
 
 export function createAdmin(
   payload: AdminCreationPayload
