@@ -17,9 +17,21 @@
       >
         <template v-slot:cell(scopes)="{ row }">
           <span v-if="row.isSuperAdmin">All</span>
-          <ul v-else>
-            <li v-for="scopes of row.scopes" :key="scopes.value">
-              {{ scopes.label }}
+          <span v-if="row.scopes.length === 0" :style="{ fontStyle: 'italic' }"
+            >No privileges</span
+          >
+          <ul v-else class="scope-list">
+            <li v-for="(scopes, index) of row.scopes" :key="scopes.value">
+              <h4
+                v-if="
+                  index !== 0
+                    ? row.scopes[index].module !== row.scopes[index - 1].module
+                    : true
+                "
+              >
+                {{ scopes.module }}
+              </h4>
+              <span>{{ scopes.label }}</span>
             </li>
           </ul>
         </template>
@@ -121,4 +133,19 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style lang="scss">
+.scope-list {
+  li {
+    span {
+      margin-left: 26px;
+      position: relative;
+      &:before {
+        content: '—';
+        position: absolute;
+        left: -23px;
+        top: -1px;
+      }
+    }
+  }
+}
+</style>
