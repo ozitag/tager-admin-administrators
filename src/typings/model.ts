@@ -1,6 +1,7 @@
 export type ScopeType = {
   readonly value: string;
   readonly label: string;
+  readonly module: string;
 };
 
 export type RoleType = {

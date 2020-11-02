@@ -15,23 +15,37 @@
         :loading="isRowDataLoading"
         :error-message="errorMessage"
       >
-        <template v-slot:cell(scopes)="{ row }">
+        <template v-slot:cell(scope)="{ row }">
+          <span v-if="row.scopes.length === 0" :style="{ fontStyle: 'italic' }">
+            No privileges
+          </span>
           <span v-if="row.isSuperAdmin">All</span>
-          <span v-if="row.scopes.length === 0" :style="{ fontStyle: 'italic' }"
-            >No privileges</span
+          <ul
+            v-for="scopeGroup in getScopeGroupList(row.scopes)"
+            v-else
+            :key="scopeGroup.module"
+            class="scope-list"
           >
-          <ul v-else class="scope-list">
-            <li v-for="(scopes, index) of row.scopes" :key="scopes.value">
-              <h4
-                v-if="
-                  index !== 0
-                    ? row.scopes[index].module !== row.scopes[index - 1].module
-                    : true
-                "
-              >
-                {{ scopes.module }}
-              </h4>
-              <span>{{ scopes.label }}</span>
+            <li v-for="scope of scopeGroup.scopes" :key="scope.value">
+              <span>{{ scope.label }}</span>
+
+              <!--              <h4-->
+              <!--                v-if="-->
+              <!--                  index !== 0-->
+              <!--                    ? row.scopes[index].module !== row.scopes[index - 1].module-->
+              <!--                    : true-->
+              <!--                "-->
+              <!--                :style="index !== 0 ? { marginTop: '10px' } : null"-->
+              <!--              >-->
+              <!--                {{ scope.module }}-->
+              <!--              </h4>-->
+              <!--              {{-->
+              <!--                row.scopes[index + 1]-->
+              <!--                  ? row.scopes[index].module !== row.scopes[index + 1].module-->
+              <!--                    ? index-->
+              <!--                    : null-->
+              <!--                  : null-->
+              <!--              }}-->
             </li>
           </ul>
         </template>
@@ -65,7 +79,7 @@ import { defineComponent, onMounted } from '@vue/composition-api';
 import { useResource, useResourceDelete } from '@tager/admin-services';
 import { ColumnDefinition } from '@tager/admin-ui';
 
-import { RoleType } from '../../typings/model';
+import { RoleType, ScopeType } from '../../typings/model';
 import { deleteRole, getRoleList } from '../../services/requests';
 import { getRoleFormUrl } from '../../utils/paths';
 
@@ -78,7 +92,7 @@ const COLUMN_DEFS: Array<ColumnDefinition<RoleType>> = [
   {
     id: 2,
     name: 'Privileges',
-    field: 'scopes',
+    field: 'scope',
   },
   {
     id: 3,
@@ -120,6 +134,23 @@ export default defineComponent({
       return isDeleting(roleId) || isRoleLoading.value;
     }
 
+    function getScopeGroupList(
+      scopes: Array<ScopeType>
+    ): Array<{ module: string; scopes: ScopeType }> {
+      const map = new Map();
+      scopes.forEach((scope) => {
+        const key = scope.module;
+        const value = map.get(key) ?? [];
+        value.push(scope);
+        map.set(key, value);
+      });
+
+      return Array.from(map.entries()).map(([key, value]) => ({
+        module: key,
+        scopes: value,
+      }));
+    }
+
     return {
       columnDefs: COLUMN_DEFS,
       rowData: roleList,
@@ -128,6 +159,7 @@ export default defineComponent({
       isBusy,
       handleRoleDelete,
       getRoleFormUrl,
+      getScopeGroupList,
     };
   },
 });
