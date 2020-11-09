@@ -16,37 +16,31 @@
         :error-message="errorMessage"
       >
         <template v-slot:cell(scope)="{ row }">
-          <span v-if="row.scopes.length === 0" :style="{ fontStyle: 'italic' }">
+          <span v-if="row.scopes.length === 0" class="no-scopes">
             No privileges
           </span>
           <span v-if="row.isSuperAdmin">All</span>
-          <ul
+          <div
             v-for="scopeGroup in getScopeGroupList(row.scopes)"
             v-else
             :key="scopeGroup.module"
-            class="scope-list"
+            class="scope-group"
           >
-            <li
-              v-for="(scope, index) of scopeGroup.scopes.length > 3
-                ? scopeGroup.scopes.slice(0, 3)
-                : scopeGroup.scopes"
-              :key="scope.value"
-            >
-              <h4
-                v-if="
-                  index !== 0
-                    ? row.scopes[index].module !== row.scopes[index - 1].module
-                    : true
-                "
+            <span class="module-name">
+              {{ scopeGroup.module }}
+            </span>
+            <ul class="scope-list">
+              <li
+                v-for="scope of scopeGroup.scopes.slice(0, 3)"
+                :key="scope.value"
               >
-                {{ scope.module }}
-              </h4>
-              <span>{{ scope.label }}</span>
-            </li>
-            <div v-if="scopeGroup.scopes.length > 3">
+                <span>— {{ scope.label }}</span>
+              </li>
+            </ul>
+            <span v-if="scopeGroup.scopes.length > 3">
               and more {{ scopeGroup.scopes.length - 3 }} privileges...
-            </div>
-          </ul>
+            </span>
+          </div>
         </template>
         <template v-slot:cell(actions)="{ row }">
           <base-button
@@ -164,21 +158,21 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.no-scopes {
+  font-style: italic;
+}
+
+.scope-group {
+  margin-bottom: 0.5rem;
+}
+
+.module-name {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+}
+
 .scope-list {
-  &:not(:first-child) {
-    margin-top: 10px;
-  }
-  li {
-    span {
-      margin-left: 26px;
-      position: relative;
-      &:before {
-        content: '—';
-        position: absolute;
-        left: -23px;
-        top: -1px;
-      }
-    }
-  }
+  padding-left: 1rem;
 }
 </style>

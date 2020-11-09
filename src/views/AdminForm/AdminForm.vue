@@ -120,21 +120,6 @@ export default defineComponent({
     const errors = ref<Record<string, string>>({});
     const isSubmitting = ref<boolean>(false);
 
-    function generatePassword() {
-      const length = 16;
-      const charset =
-        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      let retVal = '';
-      for (let i = 0; i < length; ++i) {
-        retVal += charset.charAt(Math.floor(Math.random() * charset.length));
-      }
-      return retVal;
-    }
-
-    values.value.password = !values.value.password
-      ? generatePassword()
-      : values.value.password;
-
     watch([admin, roleOptionList], () => {
       values.value = convertAdminToFormValues(
         admin.value,
@@ -144,11 +129,15 @@ export default defineComponent({
 
     /** Submit Form */
     function submitForm() {
+      /** Admin can't update self */
+      if (admin.value && admin.value.isSelf) return;
+
       const creationBody = convertFormValuesToAdminCreationPayload(
         values.value
       );
 
       const updateBody = convertFormValuesToAdminUpdatePayload(values.value);
+
       const requestPromise = isCreation.value
         ? createAdmin(creationBody)
         : updateAdmin(adminId.value, updateBody);
@@ -162,7 +151,7 @@ export default defineComponent({
             title: 'Success',
             body: isCreation.value
               ? `Admin successfully created`
-              : 'Admin successfully update',
+              : 'Admin successfully updated',
           });
         })
         .catch((error) => {

@@ -1,7 +1,7 @@
-import { Nullable } from '@tager/admin-services';
+import { Nullable, createId } from '@tager/admin-services';
 import { OptionType } from '@tager/admin-ui';
 
-import { AdminType, RoleType, ScopeGroupsData } from '../../typings/model';
+import { AdminType, RoleType } from '../../typings/model';
 import {
   AdminCreationPayload,
   AdminUpdatePayload,
@@ -22,7 +22,7 @@ export function convertAdminToFormValues(
     return {
       name: '',
       email: '',
-      password: '',
+      password: createId(),
       roles: [],
     };
   }
@@ -33,7 +33,7 @@ export function convertAdminToFormValues(
   return {
     name: admin.name,
     email: admin.email,
-    password: admin.password,
+    password: '',
     roles: currentRoleOptionList,
   };
 }
