@@ -38,7 +38,10 @@
               </li>
             </ul>
             <span v-if="scopeGroup.scopes.length > 3">
-              and more {{ scopeGroup.scopes.length - 3 }} privileges...
+              <span v-if="scopeGroup.scopes.length - 3 >= 2">
+                and more {{ scopeGroup.scopes.length - 3 }} privileges...
+              </span>
+              <span v-else> and more 1 privilege... </span>
             </span>
           </div>
         </template>
