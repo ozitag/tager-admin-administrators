@@ -37,7 +37,10 @@
                 <span>— {{ scope.label }}</span>
               </li>
             </ul>
-            <span v-if="scopeGroup.scopes.length > 3">
+            <span
+              v-if="scopeGroup.scopes.length > 3"
+              class="other-privileges-block"
+            >
               <span v-if="scopeGroup.scopes.length - 3 >= 2">
                 and more {{ scopeGroup.scopes.length - 3 }} privileges...
               </span>
@@ -177,5 +180,9 @@ export default defineComponent({
 
 .scope-list {
   padding-left: 1rem;
+}
+
+.other-privileges-block {
+  padding-left: 35px;
 }
 </style>
