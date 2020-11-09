@@ -26,27 +26,26 @@
             :key="scopeGroup.module"
             class="scope-list"
           >
-            <li v-for="scope of scopeGroup.scopes" :key="scope.value">
+            <li
+              v-for="(scope, index) of scopeGroup.scopes.length > 3
+                ? scopeGroup.scopes.slice(0, 3)
+                : scopeGroup.scopes"
+              :key="scope.value"
+            >
+              <h4
+                v-if="
+                  index !== 0
+                    ? row.scopes[index].module !== row.scopes[index - 1].module
+                    : true
+                "
+              >
+                {{ scope.module }}
+              </h4>
               <span>{{ scope.label }}</span>
-
-              <!--              <h4-->
-              <!--                v-if="-->
-              <!--                  index !== 0-->
-              <!--                    ? row.scopes[index].module !== row.scopes[index - 1].module-->
-              <!--                    : true-->
-              <!--                "-->
-              <!--                :style="index !== 0 ? { marginTop: '10px' } : null"-->
-              <!--              >-->
-              <!--                {{ scope.module }}-->
-              <!--              </h4>-->
-              <!--              {{-->
-              <!--                row.scopes[index + 1]-->
-              <!--                  ? row.scopes[index].module !== row.scopes[index + 1].module-->
-              <!--                    ? index-->
-              <!--                    : null-->
-              <!--                  : null-->
-              <!--              }}-->
             </li>
+            <div v-if="scopeGroup.scopes.length > 3">
+              and more {{ scopeGroup.scopes.length - 3 }} privileges...
+            </div>
           </ul>
         </template>
         <template v-slot:cell(actions)="{ row }">
@@ -144,7 +143,6 @@ export default defineComponent({
         value.push(scope);
         map.set(key, value);
       });
-
       return Array.from(map.entries()).map(([key, value]) => ({
         module: key,
         scopes: value,
@@ -167,6 +165,9 @@ export default defineComponent({
 
 <style lang="scss">
 .scope-list {
+  &:not(:first-child) {
+    margin-top: 10px;
+  }
   li {
     span {
       margin-left: 26px;

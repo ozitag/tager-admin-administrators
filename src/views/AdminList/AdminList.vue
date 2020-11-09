@@ -24,6 +24,7 @@
         </template>
         <template v-slot:cell(actions)="{ row }">
           <base-button
+            v-if="!row.isSelf"
             variant="icon"
             title="Edit"
             :disabled="isBusy(row.id)"
@@ -32,6 +33,7 @@
             <svg-icon name="edit"></svg-icon>
           </base-button>
           <base-button
+            v-if="!row.isSuperAdmin || !row.isSelf"
             variant="icon"
             title="Delete"
             :disabled="isBusy(row.id)"

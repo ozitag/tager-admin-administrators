@@ -62,11 +62,10 @@ export type AdminUpdatePayload = {
   name: string;
   email: string;
   roles: Array<number>;
-};
-
-export type AdminCreationPayload = AdminUpdatePayload & {
   password: string;
 };
+
+export type AdminCreationPayload = AdminUpdatePayload;
 
 export function createAdmin(
   payload: AdminCreationPayload

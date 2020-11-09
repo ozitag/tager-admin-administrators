@@ -30,11 +30,10 @@
           :error="errors.roles"
         />
         <form-field
-          v-if="isCreation"
           v-model="values.password"
           name="password"
           :error="errors.password"
-          label="Password"
+          :label="isCreation ? 'Password' : 'New password'"
         />
       </template>
     </form>
@@ -121,7 +120,22 @@ export default defineComponent({
     const errors = ref<Record<string, string>>({});
     const isSubmitting = ref<boolean>(false);
 
-    watch(admin, () => {
+    function generatePassword() {
+      const length = 16;
+      const charset =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let retVal = '';
+      for (let i = 0; i < length; ++i) {
+        retVal += charset.charAt(Math.floor(Math.random() * charset.length));
+      }
+      return retVal;
+    }
+
+    values.value.password = !values.value.password
+      ? generatePassword()
+      : values.value.password;
+
+    watch([admin, roleOptionList], () => {
       values.value = convertAdminToFormValues(
         admin.value,
         roleOptionList.value

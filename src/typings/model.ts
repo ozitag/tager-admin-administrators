@@ -8,6 +8,7 @@ export type RoleType = {
   readonly id: number;
   readonly name: string;
   readonly isSuperAdmin: boolean;
+  readonly isSelf: boolean;
   readonly scopes: Array<ScopeType>;
 };
 

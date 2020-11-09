@@ -45,6 +45,7 @@ export function convertFormValuesToAdminUpdatePayload(
     name: values.name,
     email: values.email,
     roles: values.roles.map((role) => role.value),
+    password: values.password,
   };
 }
 
@@ -52,7 +53,6 @@ export function convertFormValuesToAdminCreationPayload(
   values: FormValues
 ): AdminCreationPayload {
   return {
-    password: values.password,
     ...convertFormValuesToAdminUpdatePayload(values),
   };
 }
