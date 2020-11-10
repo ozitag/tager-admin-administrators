@@ -37,8 +37,11 @@
                 <span>— {{ scope.label }}</span>
               </li>
             </ul>
-            <span v-if="scopeGroup.scopes.length > 3">
-              and more {{ scopeGroup.scopes.length - 3 }} privileges...
+            <span
+              v-if="scopeGroup.scopes.length > 3"
+              class="other-privileges-block"
+            >
+              {{ getRestPrivilegesText(scopeGroup.scopes.length) }}
             </span>
           </div>
         </template>
@@ -143,6 +146,13 @@ export default defineComponent({
       }));
     }
 
+    function getRestPrivilegesText(restPrivilegesCount: number): string {
+      if (restPrivilegesCount - 3 >= 2) {
+        return `and more ${restPrivilegesCount - 3} privileges...`;
+      }
+      return 'and more 1 privilege...';
+    }
+
     return {
       columnDefs: COLUMN_DEFS,
       rowData: roleList,
@@ -152,6 +162,7 @@ export default defineComponent({
       handleRoleDelete,
       getRoleFormUrl,
       getScopeGroupList,
+      getRestPrivilegesText,
     };
   },
 });
@@ -174,5 +185,9 @@ export default defineComponent({
 
 .scope-list {
   padding-left: 1rem;
+}
+
+.other-privileges-block {
+  padding-left: 35px;
 }
 </style>
