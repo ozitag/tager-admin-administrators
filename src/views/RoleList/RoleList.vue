@@ -31,17 +31,24 @@
             </span>
             <ul class="scope-list">
               <li
-                v-for="scope of scopeGroup.scopes.slice(0, 3)"
+                v-for="scope of scopeGroup.scopes.slice(
+                  0,
+                  scopesPerModuleCount
+                )"
                 :key="scope.value"
               >
                 <span>— {{ scope.label }}</span>
               </li>
             </ul>
             <span
-              v-if="scopeGroup.scopes.length > 3"
-              class="other-privileges-block"
+              v-if="scopeGroup.scopes.length > scopesPerModuleCount"
+              class="rest-scopes-text"
             >
-              {{ getRestPrivilegesText(scopeGroup.scopes.length) }}
+              {{
+                getRestScopesText(
+                  scopeGroup.scopes.length - scopesPerModuleCount
+                )
+              }}
             </span>
           </div>
         </template>
@@ -146,11 +153,16 @@ export default defineComponent({
       }));
     }
 
-    function getRestPrivilegesText(restPrivilegesCount: number): string {
-      if (restPrivilegesCount - 3 >= 2) {
-        return `and more ${restPrivilegesCount - 3} privileges...`;
+    function getRestScopesText(restPrivilegesCount: number): string {
+      if (restPrivilegesCount === 1) {
+        return 'and more 1 privilege...';
       }
-      return 'and more 1 privilege...';
+
+      if (restPrivilegesCount > 1) {
+        return `and more ${restPrivilegesCount} privileges...`;
+      }
+
+      return '';
     }
 
     return {
@@ -162,7 +174,8 @@ export default defineComponent({
       handleRoleDelete,
       getRoleFormUrl,
       getScopeGroupList,
-      getRestPrivilegesText,
+      getRestScopesText,
+      scopesPerModuleCount: 3,
     };
   },
 });
@@ -187,7 +200,7 @@ export default defineComponent({
   padding-left: 1rem;
 }
 
-.other-privileges-block {
+.rest-scopes-text {
   padding-left: 35px;
 }
 </style>
