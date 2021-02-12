@@ -44,7 +44,12 @@ import {
   Nullable,
   useResource,
 } from '@tager/admin-services';
-import { OptionType, useTranslation } from '@tager/admin-ui';
+import {
+  OptionType,
+  FormFooter,
+  TagerFormSubmitEvent,
+  useTranslation,
+} from '@tager/admin-ui';
 
 import {
   createRole,
@@ -53,7 +58,7 @@ import {
   updateRole,
 } from '../../services/requests';
 import { RoleType, ScopeGroupsData } from '../../typings/model';
-import { getRoleListUrl } from '../../utils/paths';
+import { getRoleFormUrl, getRoleListUrl } from '../../utils/paths';
 
 import {
   convertFormValuesToRoleCreationPayload,
@@ -65,6 +70,7 @@ import {
 
 export default defineComponent({
   name: 'RoleForm',
+  components: { FormFooter },
   setup(props, context: SetupContext) {
     const { t } = useTranslation(context);
 
@@ -115,7 +121,7 @@ export default defineComponent({
     });
 
     /** Submit Form */
-    function submitForm() {
+    function submitForm(event: TagerFormSubmitEvent) {
       const creationBody = convertFormValuesToRoleCreationPayload(values.value);
 
       const updateBody = convertFormValuesToRoleUpdatePayload(values.value);
@@ -124,9 +130,21 @@ export default defineComponent({
         : updateRole(roleId.value, updateBody);
 
       requestPromise
-        .then(() => {
+        .then(({ data }) => {
           errors.value = {};
-          context.root.$router.push(getRoleListUrl());
+
+          if (event.type === 'create') {
+            context.root.$router.push(getRoleFormUrl({ roleId: data.id }));
+          }
+
+          if (event.type === 'create_exit' || event.type === 'save_exit') {
+            context.root.$router.push(getRoleListUrl());
+          }
+
+          if (event.type === 'create_create-another') {
+            values.value = convertRoleToFormValues(null);
+          }
+
           context.root.$toast({
             variant: 'success',
             title: t('administrators:success'),
