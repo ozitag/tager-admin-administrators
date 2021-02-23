@@ -1,13 +1,5 @@
 <template>
-  <page
-    :title="pageTitle"
-    :is-content-loading="isContentLoading"
-    :footer="{
-      backHref: backButtonUrl,
-      onSubmit: submitForm,
-      isSubmitting: isSubmitting,
-    }"
-  >
+  <page :title="pageTitle" :is-content-loading="isContentLoading">
     <form novalidate @submit.prevent>
       <template>
         <form-field
@@ -41,6 +33,16 @@
         />
       </template>
     </form>
+
+    <template v-slot:footer>
+      <FormFooter
+        :back-href="backButtonUrl"
+        :on-submit="submitForm"
+        :is-submitting="isSubmitting"
+        :is-creation="isCreation"
+        :can-create-another="isCreation"
+      />
+    </template>
   </page>
 </template>
 
@@ -59,7 +61,7 @@ import {
   Nullable,
   useResource,
 } from '@tager/admin-services';
-import { OptionType, useTranslation } from '@tager/admin-ui';
+import { OptionType, FormFooter, TagerFormSubmitEvent, useTranslation } from '@tager/admin-ui';
 
 import { AdminType, RoleType } from '../../typings/model';
 import {
@@ -68,7 +70,7 @@ import {
   getRoleList,
   updateAdmin,
 } from '../../services/requests';
-import { getAdminListUrl } from '../../utils/paths';
+import { getAdminFormUrl, getAdminListUrl } from '../../utils/paths';
 
 import {
   convertFormValuesToAdminCreationPayload,
@@ -80,6 +82,7 @@ import {
 
 export default defineComponent({
   name: 'AdminForm',
+  components: { FormFooter },
   setup(props, context: SetupContext) {
     const { t } = useTranslation(context);
 
@@ -135,7 +138,7 @@ export default defineComponent({
     });
 
     /** Submit Form */
-    function submitForm() {
+    function submitForm(event: TagerFormSubmitEvent) {
       /** Admin can't update self */
       if (admin.value && admin.value.isSelf) return;
 
@@ -150,9 +153,21 @@ export default defineComponent({
         : updateAdmin(adminId.value, updateBody);
 
       requestPromise
-        .then(() => {
+        .then(({ data }) => {
           errors.value = {};
-          context.root.$router.push(getAdminListUrl());
+
+          if (event.type === 'create') {
+            context.root.$router.push(getAdminFormUrl({ adminId: data.id }));
+          }
+
+          if (event.type === 'create_exit' || event.type === 'save_exit') {
+            context.root.$router.push(getAdminListUrl());
+          }
+
+          if (event.type === 'create_create-another') {
+            values.value = convertAdminToFormValues(null, roleOptionList.value);
+          }
+
           context.root.$toast({
             variant: 'success',
             title: t('administrators:success'),
