@@ -1,9 +1,9 @@
 <template>
   <page
-    title="List of roles"
+    :title="t('administrators:listOfRoles')"
     :header-buttons="[
       {
-        text: 'Add role',
+        text: t('administrators:addRole'),
         href: getRoleFormUrl({ roleId: 'create' }),
       },
     ]"
@@ -17,9 +17,9 @@
       >
         <template v-slot:cell(scope)="{ row }">
           <span v-if="row.scopes.length === 0" class="no-scopes">
-            No privileges
+            {{ t('administrators:noPrivileges') }}
           </span>
-          <span v-if="row.isSuperAdmin">All</span>
+          <span v-if="row.isSuperAdmin">{{ t('administrators:all') }}</span>
           <div
             v-for="scopeGroup in getScopeGroupList(row.scopes)"
             v-else
@@ -55,7 +55,7 @@
         <template v-slot:cell(actions)="{ row }">
           <base-button
             variant="icon"
-            title="Edit"
+            :title="t('administrators:edit')"
             :disabled="isBusy(row.id)"
             :href="getRoleFormUrl({ roleId: row.id })"
           >
@@ -64,7 +64,7 @@
           <base-button
             v-if="!row.isSuperAdmin"
             variant="icon"
-            title="Delete"
+            :title="t('administrators:delete')"
             :disabled="isBusy(row.id)"
             @click="handleRoleDelete(row.id)"
           >
@@ -77,38 +77,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from '@vue/composition-api';
+import { defineComponent, onMounted, SetupContext } from '@vue/composition-api';
 
 import { useResource, useResourceDelete } from '@tager/admin-services';
-import { ColumnDefinition } from '@tager/admin-ui';
+import { ColumnDefinition, useTranslation } from '@tager/admin-ui';
 
 import { RoleType, ScopeType } from '../../typings/model';
 import { deleteRole, getRoleList } from '../../services/requests';
 import { getRoleFormUrl } from '../../utils/paths';
 
-const COLUMN_DEFS: Array<ColumnDefinition<RoleType>> = [
-  {
-    id: 1,
-    name: 'Role',
-    field: 'name',
-  },
-  {
-    id: 2,
-    name: 'Privileges',
-    field: 'scope',
-  },
-  {
-    id: 3,
-    name: 'Actions',
-    field: 'actions',
-    style: { width: '180px', textAlign: 'center', whiteSpace: 'nowrap' },
-    headStyle: { width: '180px', textAlign: 'center' },
-  },
-];
-
 export default defineComponent({
   name: 'RoleList',
-  setup(props, context) {
+  setup(props, context: SetupContext) {
+    const { t } = useTranslation(context);
+
     const [
       fetchRoleList,
       { data: roleList, loading: isRoleLoading, error },
@@ -165,8 +147,29 @@ export default defineComponent({
       return '';
     }
 
+    const columnDefs: Array<ColumnDefinition<RoleType>> = [
+      {
+        id: 1,
+        name: t('administrators:role'),
+        field: 'name',
+      },
+      {
+        id: 2,
+        name: t('administrators:privileges'),
+        field: 'scope',
+      },
+      {
+        id: 3,
+        name: t('administrators:actions'),
+        field: 'actions',
+        style: { width: '180px', textAlign: 'center', whiteSpace: 'nowrap' },
+        headStyle: { width: '180px', textAlign: 'center' },
+      },
+    ];
+
     return {
-      columnDefs: COLUMN_DEFS,
+      t,
+      columnDefs,
       rowData: roleList,
       isRowDataLoading: isRoleLoading,
       errorMessage: error,

@@ -15,6 +15,8 @@ import {
   ROLE_LIST_ROUTE,
   ROLE_FORM_ROUTE,
 } from './constants/routes';
+import EN from './locales/en';
+import RU from './locales/ru';
 
 configStore.setConfig(config);
 
@@ -29,6 +31,9 @@ const router = createRouter(
   },
   { useTitleSync: false }
 );
+
+i18n.addTranslations('en', 'administrators', EN);
+i18n.addTranslations('ru', 'administrators', RU);
 
 i18n.init({ debug: false }).then(() => {
   Vue.use(VueCompositionApi);

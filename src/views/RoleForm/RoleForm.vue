@@ -14,13 +14,13 @@
           v-model="values.name"
           name="name"
           :error="errors.name"
-          label="Name"
+          :label="t('administrators:name')"
         />
         <form-field-multi-select
           v-if="!values.isSuperAdmin"
           v-model="values.scopes"
           name="scopes"
-          label="Privileges"
+          :label="t('administrators:privileges')"
           :options="scopeOptionList"
           :error="errors.scopes"
         />
@@ -35,6 +35,7 @@ import {
   defineComponent,
   onMounted,
   ref,
+  SetupContext,
   watch,
 } from '@vue/composition-api';
 
@@ -43,7 +44,7 @@ import {
   Nullable,
   useResource,
 } from '@tager/admin-services';
-import { OptionType } from '@tager/admin-ui';
+import { OptionType, useTranslation } from '@tager/admin-ui';
 
 import {
   createRole,
@@ -64,7 +65,9 @@ import {
 
 export default defineComponent({
   name: 'RoleForm',
-  setup(props, context) {
+  setup(props, context: SetupContext) {
+    const { t } = useTranslation(context);
+
     const roleId = computed<string>(() => context.root.$route.params.roleId);
 
     const isCreation = computed<boolean>(() => roleId.value === 'create');
@@ -126,10 +129,10 @@ export default defineComponent({
           context.root.$router.push(getRoleListUrl());
           context.root.$toast({
             variant: 'success',
-            title: 'Success',
+            title: t('administrators:success'),
             body: isCreation.value
-              ? `Role successfully created`
-              : 'Role successfully update',
+              ? t('administrators:roleSuccessfullyCreated')
+              : t('administrators:roleSuccessfullyUpdate'),
           });
         })
         .catch((error) => {
@@ -137,10 +140,10 @@ export default defineComponent({
           errors.value = convertRequestErrorToMap(error);
           context.root.$toast({
             variant: 'danger',
-            title: 'Error',
+            title: t('administrators:error'),
             body: isCreation.value
-              ? `Role creation error`
-              : 'Role update error',
+              ? t('administrators:roleCreationError')
+              : t('administrators:roleUpdateError'),
           });
         })
         .finally(() => {
@@ -150,8 +153,8 @@ export default defineComponent({
 
     const pageTitle = computed<string>(() => {
       return isCreation.value
-        ? `Create role`
-        : `Update role "${values.value.name}"`;
+        ? t('administrators:createRole')
+        : `${t('administrators:updateRole')} "${values.value.name}"`;
     });
 
     const isContentLoading = computed<boolean>(
@@ -159,6 +162,7 @@ export default defineComponent({
     );
 
     return {
+      t,
       backButtonUrl: getRoleListUrl(),
       values,
       errors,
