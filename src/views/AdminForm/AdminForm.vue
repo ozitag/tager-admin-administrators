@@ -14,18 +14,18 @@
           v-model="values.name"
           name="name"
           :error="errors.name"
-          label="Name"
+          :label="t('administrators:name')"
         />
         <form-field
           v-model="values.email"
           name="email"
           :error="errors.email"
-          label="Email"
+          :label="t('administrators:email')"
         />
         <form-field-multi-select
           v-model="values.roles"
           name="roles"
-          label="Roles"
+          :label="t('administrators:roles')"
           :options="roleOptionList"
           :error="errors.roles"
         />
@@ -33,7 +33,11 @@
           v-model="values.password"
           name="password"
           :error="errors.password"
-          :label="isCreation ? 'Password' : 'New password'"
+          :label="
+            isCreation
+              ? t('administrators:password')
+              : t('administrators:newPassword')
+          "
         />
       </template>
     </form>
@@ -46,6 +50,7 @@ import {
   defineComponent,
   onMounted,
   ref,
+  SetupContext,
   watch,
 } from '@vue/composition-api';
 
@@ -54,7 +59,7 @@ import {
   Nullable,
   useResource,
 } from '@tager/admin-services';
-import { OptionType } from '@tager/admin-ui';
+import { OptionType, useTranslation } from '@tager/admin-ui';
 
 import { AdminType, RoleType } from '../../typings/model';
 import {
@@ -75,7 +80,9 @@ import {
 
 export default defineComponent({
   name: 'AdminForm',
-  setup(props, context) {
+  setup(props, context: SetupContext) {
+    const { t } = useTranslation(context);
+
     const adminId = computed<string>(() => context.root.$route.params.adminId);
 
     const isCreation = computed<boolean>(() => adminId.value === 'create');
@@ -148,10 +155,10 @@ export default defineComponent({
           context.root.$router.push(getAdminListUrl());
           context.root.$toast({
             variant: 'success',
-            title: 'Success',
+            title: t('administrators:success'),
             body: isCreation.value
-              ? `Admin successfully created`
-              : 'Admin successfully updated',
+              ? t('administrators:adminSuccessfullyCreated')
+              : t('administrators:adminSuccessfullyUpdated'),
           });
         })
         .catch((error) => {
@@ -159,10 +166,10 @@ export default defineComponent({
           errors.value = convertRequestErrorToMap(error);
           context.root.$toast({
             variant: 'danger',
-            title: 'Error',
+            title: t('administrators:error'),
             body: isCreation.value
-              ? `Admin creation error`
-              : 'Admin update error',
+              ? t('administrators:adminCreationError')
+              : t('administrators:adminUpdateError'),
           });
         })
         .finally(() => {
@@ -172,8 +179,8 @@ export default defineComponent({
 
     const pageTitle = computed<string>(() => {
       return isCreation.value
-        ? 'Create admin'
-        : `Update admin "${values.value.name}"`;
+        ? t('administrators:createAdmin')
+        : `${t('administrators:updateAdmin')} "${values.value.name}"`;
     });
 
     const isContentLoading = computed<boolean>(
@@ -181,6 +188,7 @@ export default defineComponent({
     );
 
     return {
+      t,
       backButtonUrl: getAdminListUrl(),
       values,
       errors,

@@ -7,16 +7,17 @@ import RoleForm from '../views/RoleForm';
 
 import { ADMINISTRATOR_ROUTE_PATHS } from './paths';
 
-const HOME_BREADCRUMB = { url: '/', text: 'Home' };
-
 export const ADMIN_LIST_ROUTE: CustomRouteConfig = {
   path: ADMINISTRATOR_ROUTE_PATHS.ADMIN_LIST,
   component: AdminList,
   name: 'AdminList',
   meta: {
-    getBreadcrumbs: () => [
-      HOME_BREADCRUMB,
-      { url: ADMINISTRATOR_ROUTE_PATHS.ADMIN_LIST, text: 'Admin List' },
+    getBreadcrumbs: (route, t) => [
+      { url: '/', text: t('administrators:home') },
+      {
+        url: ADMINISTRATOR_ROUTE_PATHS.ADMIN_LIST,
+        text: t('administrators:adminList'),
+      },
     ],
   },
 };
@@ -26,10 +27,13 @@ export const ADMIN_FORM_ROUTE: CustomRouteConfig = {
   component: AdminForm,
   name: 'AdminForm',
   meta: {
-    getBreadcrumbs: (route) => [
-      HOME_BREADCRUMB,
-      { url: ADMINISTRATOR_ROUTE_PATHS.ADMIN_LIST, text: 'Admin List' },
-      { url: route.path, text: 'Admin form' },
+    getBreadcrumbs: (route, t) => [
+      { url: '/', text: t('administrators:home') },
+      {
+        url: ADMINISTRATOR_ROUTE_PATHS.ADMIN_LIST,
+        text: t('administrators:adminList'),
+      },
+      { url: route.path, text: t('administrators:adminForm') },
     ],
   },
 };
@@ -39,9 +43,12 @@ export const ROLE_LIST_ROUTE: CustomRouteConfig = {
   component: RoleList,
   name: 'RoleList',
   meta: {
-    getBreadcrumbs: () => [
-      HOME_BREADCRUMB,
-      { url: ADMINISTRATOR_ROUTE_PATHS.ROLE_LIST, text: 'Role List' },
+    getBreadcrumbs: (route, t) => [
+      { url: '/', text: t('administrators:home') },
+      {
+        url: ADMINISTRATOR_ROUTE_PATHS.ROLE_LIST,
+        text: t('administrators:roleList'),
+      },
     ],
   },
 };
@@ -51,10 +58,13 @@ export const ROLE_FORM_ROUTE: CustomRouteConfig = {
   component: RoleForm,
   name: 'RoleForm',
   meta: {
-    getBreadcrumbs: (route) => [
-      HOME_BREADCRUMB,
-      { url: ADMINISTRATOR_ROUTE_PATHS.ROLE_LIST, text: 'Role List' },
-      { url: route.path, text: 'Role form' },
+    getBreadcrumbs: (route, t) => [
+      { url: '/', text: t('administrators:home') },
+      {
+        url: ADMINISTRATOR_ROUTE_PATHS.ROLE_LIST,
+        text: t('administrators:roleList'),
+      },
+      { url: route.path, text: t('administrators:roleForm') },
     ],
   },
 };

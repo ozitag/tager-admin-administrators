@@ -1,9 +1,9 @@
 <template>
   <page
-    title="Administrators"
+    :title="t('administrators:administrators')"
     :header-buttons="[
       {
-        text: 'Create administrator',
+        text: t('administrators:createAdministrator'),
         href: getAdminFormUrl({ adminId: 'create' }),
       },
     ]"
@@ -26,7 +26,7 @@
           <base-button
             v-if="!row.isSelf"
             variant="icon"
-            title="Edit"
+            :title="t('administrators:edit')"
             :disabled="isBusy(row.id)"
             :href="getAdminFormUrl({ adminId: row.id })"
           >
@@ -35,7 +35,7 @@
           <base-button
             v-if="!row.isSuperAdmin || !row.isSelf"
             variant="icon"
-            title="Delete"
+            :title="t('administrators:delete')"
             :disabled="isBusy(row.id)"
             @click="handleAdminDelete(row.id)"
           >
@@ -48,43 +48,20 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted } from '@vue/composition-api';
+import { defineComponent, onMounted, SetupContext } from '@vue/composition-api';
 
 import { useResource, useResourceDelete } from '@tager/admin-services';
-import { ColumnDefinition } from '@tager/admin-ui';
+import { ColumnDefinition, useTranslation } from '@tager/admin-ui';
 
 import { AdminType } from '../../typings/model';
 import { deleteAdmin, getAdminList } from '../../services/requests';
 import { getAdminFormUrl } from '../../utils/paths';
 
-const COLUMN_DEFS: Array<ColumnDefinition<AdminType>> = [
-  {
-    id: 1,
-    name: 'Admin',
-    field: 'name',
-  },
-  {
-    id: 2,
-    name: 'Email',
-    field: 'email',
-  },
-  {
-    id: 3,
-    name: 'Roles',
-    field: 'roles',
-  },
-  {
-    id: 4,
-    name: 'Actions',
-    field: 'actions',
-    style: { width: '180px', textAlign: 'center', whiteSpace: 'nowrap' },
-    headStyle: { width: '180px', textAlign: 'center' },
-  },
-];
-
 export default defineComponent({
   name: 'AdminList',
-  setup(props, context) {
+  setup(props, context: SetupContext) {
+    const { t } = useTranslation(context);
+
     const [
       fetchAdminList,
       { data: adminList, loading: isAdminLoading, error },
@@ -112,8 +89,35 @@ export default defineComponent({
     function isBusy(adminId: number): boolean {
       return isDeleting(adminId) || isAdminLoading.value;
     }
+
+    const columnDefs: Array<ColumnDefinition<AdminType>> = [
+      {
+        id: 1,
+        name: t('administrators:admin'),
+        field: 'name',
+      },
+      {
+        id: 2,
+        name: t('administrators:email'),
+        field: 'email',
+      },
+      {
+        id: 3,
+        name: t('administrators:roles'),
+        field: 'roles',
+      },
+      {
+        id: 4,
+        name: t('administrators:actions'),
+        field: 'actions',
+        style: { width: '180px', textAlign: 'center', whiteSpace: 'nowrap' },
+        headStyle: { width: '180px', textAlign: 'center' },
+      },
+    ];
+
     return {
-      columnDefs: COLUMN_DEFS,
+      t,
+      columnDefs,
       rowData: adminList,
       isRowDataLoading: isAdminLoading,
       errorMessage: error,
