@@ -35,6 +35,7 @@ const EN = {
   adminForm: 'Admin form',
   roleList: 'Role List',
   roleForm: 'Role form',
+  andMorePrivilege: 'and more {{count}} privilege...',
 };
 
 export default EN;

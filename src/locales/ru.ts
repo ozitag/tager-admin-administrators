@@ -37,6 +37,7 @@ const RU: typeof EN = {
   adminForm: 'Форма администратора',
   roleList: 'Список ролей',
   roleForm: 'Форма роли',
+  andMorePrivilege: 'и еще {{count}} привилегий...',
 };
 
 export default RU;

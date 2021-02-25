@@ -137,11 +137,13 @@ export default defineComponent({
 
     function getRestScopesText(restPrivilegesCount: number): string {
       if (restPrivilegesCount === 1) {
-        return 'and more 1 privilege...';
+        return t('administrators:andMorePrivilege', { count: 1 });
       }
 
       if (restPrivilegesCount > 1) {
-        return `and more ${restPrivilegesCount} privileges...`;
+        return t('administrators:andMorePrivilege', {
+          count: restPrivilegesCount,
+        });
       }
 
       return '';
