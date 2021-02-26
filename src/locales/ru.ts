@@ -1,6 +1,7 @@
 import EN from './en';
 
 const RU: typeof EN = {
+  home: 'Главная',
   administrators: 'Администраторы',
   role: 'Роль',
   roles: 'Роли',

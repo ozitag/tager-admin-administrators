@@ -1,4 +1,5 @@
 const EN = {
+  home: 'Home',
   administrators: 'Administrators',
   role: 'Role',
   roles: 'Roles',
