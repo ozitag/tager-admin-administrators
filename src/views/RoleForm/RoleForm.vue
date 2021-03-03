@@ -1,13 +1,5 @@
 <template>
-  <page
-    :title="pageTitle"
-    :is-content-loading="isContentLoading"
-    :footer="{
-      backHref: backButtonUrl,
-      onSubmit: submitForm,
-      isSubmitting: isSubmitting,
-    }"
-  >
+  <page :title="pageTitle" :is-content-loading="isContentLoading">
     <form novalidate @submit.prevent>
       <template>
         <form-field
@@ -26,6 +18,16 @@
         />
       </template>
     </form>
+
+    <template v-slot:footer>
+      <FormFooter
+        :back-href="backButtonUrl"
+        :on-submit="submitForm"
+        :is-submitting="isSubmitting"
+        :is-creation="isCreation"
+        :can-create-another="isCreation"
+      />
+    </template>
   </page>
 </template>
 
