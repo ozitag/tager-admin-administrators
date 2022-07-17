@@ -1,4 +1,4 @@
-const EN = {
+export const EN = {
   home: 'Home',
   administrators: 'Administrators',
   role: 'Role',
@@ -38,5 +38,3 @@ const EN = {
   roleForm: 'Role form',
   andMorePrivilege: 'and more {{count}} privilege...',
 };
-
-export default EN;

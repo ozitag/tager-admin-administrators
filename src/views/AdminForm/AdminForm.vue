@@ -1,49 +1,47 @@
 <template>
-  <page :title="pageTitle" :is-content-loading="isContentLoading">
+  <Page :title="pageTitle" :is-content-loading="isContentLoading">
     <form novalidate @submit.prevent>
-      <template>
-        <form-field
-          v-model="values.name"
-          name="name"
-          :error="errors.name"
-          :label="t('administrators:name')"
+        <FormField
+            v-model:value="values.name"
+            name="name"
+            :error="errors.name"
+            :label="$i18n.t('administrators:name')"
         />
-        <form-field
-          v-model="values.email"
-          name="email"
-          :error="errors.email"
-          :label="t('administrators:email')"
+        <FormField
+            v-model:value="values.email"
+            name="email"
+            :error="errors.email"
+            :label="$i18n.t('administrators:email')"
         />
-        <form-field-multi-select
-          v-model="values.roles"
-          name="roles"
-          :label="t('administrators:roles')"
-          :options="roleOptionList"
-          :error="errors.roles"
+        <FormFieldMultiSelect
+            v-model:selected-options="values.roles"
+            name="roles"
+            :label="$i18n.t('administrators:roles')"
+            :options="roleOptionList"
+            :error="errors.roles"
         />
-        <form-field
-          v-model="values.password"
-          name="password"
-          :error="errors.password"
-          :label="
+        <FormField
+            v-model:value="values.password"
+            name="password"
+            :error="errors.password"
+            :label="
             isCreation
-              ? t('administrators:password')
-              : t('administrators:newPassword')
+              ? $i18n.t('administrators:password')
+              : $i18n.t('administrators:newPassword')
           "
         />
-      </template>
     </form>
 
-    <template v-slot:footer>
+    <template #footer>
       <FormFooter
-        :back-href="backButtonUrl"
-        :on-submit="submitForm"
-        :is-submitting="isSubmitting"
-        :is-creation="isCreation"
-        :can-create-another="isCreation"
+          :back-href="backButtonUrl"
+          @submit="submitForm"
+          :is-submitting="isSubmitting"
+          :is-creation="isCreation"
+          :can-create-another="isCreation"
       />
     </template>
-  </page>
+  </Page>
 </template>
 
 <script lang="ts">
@@ -54,23 +52,27 @@ import {
   ref,
   SetupContext,
   watch,
-} from '@vue/composition-api';
+} from 'vue';
+
+import {Page} from "@tager/admin-layout";
 
 import {
-  convertRequestErrorToMap,
+  convertRequestErrorToMap, navigateBack,
   Nullable,
-  useResource,
+  useResource, useToast,
 } from '@tager/admin-services';
-import { OptionType, FormFooter, TagerFormSubmitEvent, useTranslation } from '@tager/admin-ui';
+import {OptionType, FormFooter, TagerFormSubmitEvent, FormField, FormFieldMultiSelect} from '@tager/admin-ui';
 
-import { AdminType, RoleType } from '../../typings/model';
+import {useI18n} from "@tager/admin-services";
+
+import {AdminType, RoleType} from '../../typings/model';
 import {
   createAdmin,
   getAdmin,
   getRoleList,
   updateAdmin,
 } from '../../services/requests';
-import { getAdminFormUrl, getAdminListUrl } from '../../utils/paths';
+import {getAdminFormUrl, getAdminListUrl, getRoleFormUrl, getRoleListUrl} from '../../utils/paths';
 
 import {
   convertFormValuesToAdminCreationPayload,
@@ -79,23 +81,25 @@ import {
   convertRoleListToOptions,
   FormValues,
 } from './AdminForm.helpers';
+import {useRoute, useRouter} from "vue-router";
 
 export default defineComponent({
   name: 'AdminForm',
-  components: { FormFooter },
-  setup(props, context: SetupContext) {
-    const { t } = useTranslation(context);
+  components: {Page, FormFooter, FormField, FormFieldMultiSelect},
+  setup() {
+    const {t} = useI18n();
 
-    const adminId = computed<string>(() => context.root.$route.params.adminId);
+    const route = useRoute();
+    const router = useRouter();
+    const toast = useToast();
 
-    const isCreation = computed<boolean>(() => adminId.value === 'create');
+    const adminId = computed(() => route.params.adminId as string | number);
 
-    const [fetchAdmin, { data: admin, loading: isAdminLoading }] = useResource<
-      Nullable<AdminType>
-    >({
+    const isCreation = computed(() => adminId.value === "create");
+
+    const [fetchAdmin, {data: admin, loading: isAdminLoading}] = useResource<Nullable<AdminType>>({
       fetchResource: () => getAdmin(adminId.value),
       initialValue: null,
-      context,
       resourceName: 'Admin',
     });
 
@@ -103,11 +107,10 @@ export default defineComponent({
 
     const [
       fetchRoleList,
-      { data: roleList, loading: isRoleListLoading },
+      {data: roleList, loading: isRoleListLoading},
     ] = useResource<Array<RoleType>>({
       fetchResource: getRoleList,
       initialValue: [],
-      context,
       resourceName: 'Role list',
     });
 
@@ -120,11 +123,11 @@ export default defineComponent({
 
     /** Role Options */
     const roleOptionList = computed<Array<OptionType<number>>>(() =>
-      convertRoleListToOptions(roleList.value)
+        convertRoleListToOptions(roleList.value)
     );
 
     const values = ref<FormValues>(
-      convertAdminToFormValues(admin.value, roleOptionList.value)
+        convertAdminToFormValues(admin.value, roleOptionList.value)
     );
 
     const errors = ref<Record<string, string>>({});
@@ -132,8 +135,8 @@ export default defineComponent({
 
     watch([admin, roleOptionList], () => {
       values.value = convertAdminToFormValues(
-        admin.value,
-        roleOptionList.value
+          admin.value,
+          roleOptionList.value
       );
     });
 
@@ -143,63 +146,63 @@ export default defineComponent({
       if (admin.value && admin.value.isSelf) return;
 
       const creationBody = convertFormValuesToAdminCreationPayload(
-        values.value
+          values.value
       );
 
       const updateBody = convertFormValuesToAdminUpdatePayload(values.value);
 
       const requestPromise = isCreation.value
-        ? createAdmin(creationBody)
-        : updateAdmin(adminId.value, updateBody);
+          ? createAdmin(creationBody)
+          : updateAdmin(adminId.value, updateBody);
 
       requestPromise
-        .then(({ data }) => {
-          errors.value = {};
+          .then(({data}) => {
+            errors.value = {};
 
-          if (event.type === 'create') {
-            context.root.$router.push(getAdminFormUrl({ adminId: data.id }));
-          }
+            if (event.type === "create") {
+              router.push(getAdminFormUrl({adminId: data.id}));
+            }
 
-          if (event.type === 'create_exit' || event.type === 'save_exit') {
-            context.root.$router.push(getAdminListUrl());
-          }
+            if (event.type === "create_exit" || event.type === "save_exit") {
+              navigateBack(router, getAdminListUrl());
+            }
 
-          if (event.type === 'create_create-another') {
-            values.value = convertAdminToFormValues(null, roleOptionList.value);
-          }
+            if (event.type === 'create_create-another') {
+              values.value = convertAdminToFormValues(null, roleOptionList.value);
+            }
 
-          context.root.$toast({
-            variant: 'success',
-            title: t('administrators:success'),
-            body: isCreation.value
-              ? t('administrators:adminSuccessfullyCreated')
-              : t('administrators:adminSuccessfullyUpdated'),
+            toast.show({
+              variant: 'success',
+              title: t('administrators:success'),
+              body: isCreation.value
+                  ? t('administrators:adminSuccessfullyCreated')
+                  : t('administrators:adminSuccessfullyUpdated'),
+            });
+          })
+          .catch((error) => {
+            console.error(error);
+            errors.value = convertRequestErrorToMap(error);
+            toast.show({
+              variant: 'danger',
+              title: t('administrators:error'),
+              body: isCreation.value
+                  ? t('administrators:adminCreationError')
+                  : t('administrators:adminUpdateError'),
+            });
+          })
+          .finally(() => {
+            isSubmitting.value = false;
           });
-        })
-        .catch((error) => {
-          console.error(error);
-          errors.value = convertRequestErrorToMap(error);
-          context.root.$toast({
-            variant: 'danger',
-            title: t('administrators:error'),
-            body: isCreation.value
-              ? t('administrators:adminCreationError')
-              : t('administrators:adminUpdateError'),
-          });
-        })
-        .finally(() => {
-          isSubmitting.value = false;
-        });
     }
 
     const pageTitle = computed<string>(() => {
       return isCreation.value
-        ? t('administrators:createAdmin')
-        : `${t('administrators:updateAdmin')} "${values.value.name}"`;
+          ? t('administrators:createAdmin')
+          : `${t('administrators:updateAdmin')} "${values.value.name}"`;
     });
 
     const isContentLoading = computed<boolean>(
-      () => isAdminLoading.value || isRoleListLoading.value
+        () => isAdminLoading.value || isRoleListLoading.value
     );
 
     return {

@@ -1,75 +1,81 @@
 <template>
-  <page
-    :title="t('administrators:administrators')"
-    :header-buttons="[
+  <Page
+      :title="$i18n.t('administrators:administrators')"
+      :header-buttons="[
       {
-        text: t('administrators:createAdministrator'),
+        text: $i18n.t('administrators:createAdministrator'),
         href: getAdminFormUrl({ adminId: 'create' }),
       },
     ]"
   >
-    <template v-slot:content>
-      <base-table
+    <DataTable
         :column-defs="columnDefs"
         :row-data="rowData"
         :loading="isRowDataLoading"
         :error-message="errorMessage"
-      >
-        <template v-slot:cell(roles)="{ row }">
-          <ul>
-            <li v-for="role of row.roles" :key="role.id">
-              {{ role.name }}
-            </li>
-          </ul>
-        </template>
-        <template v-slot:cell(actions)="{ row }">
-          <base-button
+    >
+      <template v-slot:cell(roles)="{ row }">
+        <ul>
+          <li v-for="role of row.roles" :key="role.id">
+            {{ role.name }}
+          </li>
+        </ul>
+      </template>
+      <template #cell(actions)="{ row }">
+        <BaseButton
             v-if="!row.isSelf"
             variant="icon"
-            :title="t('administrators:edit')"
+            :title="$i18n.t('administrators:edit')"
             :disabled="isBusy(row.id)"
             :href="getAdminFormUrl({ adminId: row.id })"
-          >
-            <svg-icon name="edit"></svg-icon>
-          </base-button>
-          <base-button
+        >
+          <EditIcon/>
+        </BaseButton>
+        <BaseButton
             v-if="!row.isSuperAdmin || !row.isSelf"
             variant="icon"
-            :title="t('administrators:delete')"
+            :title="$i18n.t('administrators:delete')"
             :disabled="isBusy(row.id)"
             @click="handleAdminDelete(row.id)"
-          >
-            <svg-icon name="delete"></svg-icon>
-          </base-button>
-        </template>
-      </base-table>
-    </template>
-  </page>
+        >
+          <DeleteIcon/>
+        </BaseButton>
+      </template>
+    </DataTable>
+  </Page>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, SetupContext } from '@vue/composition-api';
+import {defineComponent, onMounted} from 'vue';
 
-import { useResource, useResourceDelete } from '@tager/admin-services';
-import { ColumnDefinition, useTranslation } from '@tager/admin-ui';
+import {useResourceDelete} from '@tager/admin-services';
+import {ColumnDefinition, DataTable, BaseButton, DeleteIcon, EditIcon, useDataTable} from '@tager/admin-ui';
+import {useI18n} from "@tager/admin-services";
 
-import { AdminType } from '../../typings/model';
-import { deleteAdmin, getAdminList } from '../../services/requests';
-import { getAdminFormUrl } from '../../utils/paths';
+import {AdminType} from '../../typings/model';
+import {deleteAdmin, getAdminList} from '../../services/requests';
+import {getAdminFormUrl} from '../../utils/paths';
+
+import {Page} from "@tager/admin-layout";
 
 export default defineComponent({
   name: 'AdminList',
-  setup(props, context: SetupContext) {
-    const { t } = useTranslation(context);
+  components: {
+    Page, DataTable, BaseButton, DeleteIcon, EditIcon
+  },
+  setup() {
+    const {t} = useI18n();
 
-    const [
-      fetchAdminList,
-      { data: adminList, loading: isAdminLoading, error },
-    ] = useResource<Array<AdminType>>({
-      fetchResource: getAdminList,
+    const {
+      fetchEntityList: fetchAdminList,
+      isLoading: isAdminListLoading,
+      rowData: adminList,
+      errorMessage: error,
+    } = useDataTable<AdminType>({
+      fetchEntityList: () => getAdminList(),
       initialValue: [],
-      context,
-      resourceName: 'Admin list',
+      resourceName: "Admin list",
+      pageSize: 100,
     });
 
     onMounted(() => {
@@ -83,11 +89,10 @@ export default defineComponent({
       deleteResource: deleteAdmin,
       resourceName: 'Admin',
       onSuccess: fetchAdminList,
-      context,
     });
 
     function isBusy(adminId: number): boolean {
-      return isDeleting(adminId) || isAdminLoading.value;
+      return isDeleting(adminId) || isAdminListLoading.value;
     }
 
     const columnDefs: Array<ColumnDefinition<AdminType>> = [
@@ -110,8 +115,8 @@ export default defineComponent({
         id: 4,
         name: t('administrators:actions'),
         field: 'actions',
-        style: { width: '180px', textAlign: 'center', whiteSpace: 'nowrap' },
-        headStyle: { width: '180px', textAlign: 'center' },
+        style: {width: '180px', textAlign: 'center', whiteSpace: 'nowrap'},
+        headStyle: {width: '180px', textAlign: 'center'},
       },
     ];
 
@@ -119,7 +124,7 @@ export default defineComponent({
       t,
       columnDefs,
       rowData: adminList,
-      isRowDataLoading: isAdminLoading,
+      isRowDataLoading: isAdminListLoading,
       errorMessage: error,
       isBusy,
       handleAdminDelete,
