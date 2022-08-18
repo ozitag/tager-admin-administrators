@@ -1,3 +1,5 @@
+import { FieldShortType, IncomingValueUnion } from '@tager/admin-dynamic-field';
+
 export type ScopeType = {
   readonly value: string;
   readonly label: string;
@@ -25,4 +27,5 @@ export type AdminType = {
   readonly roles: Array<RoleType>;
   readonly isSelf: boolean;
   readonly isSuperAdmin: boolean;
+  readonly params: Array<FieldShortType<IncomingValueUnion>>;
 };

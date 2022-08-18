@@ -1,5 +1,6 @@
 import { Nullable, createId } from '@tager/admin-services';
 import { OptionType } from '@tager/admin-ui';
+import { FieldUnion, universalFieldUtils } from '@tager/admin-dynamic-field';
 
 import { AdminType, RoleType } from '../../typings/model';
 import {
@@ -39,21 +40,27 @@ export function convertAdminToFormValues(
 }
 
 export function convertFormValuesToAdminUpdatePayload(
-  values: FormValues
+  values: FormValues,
+  paramsValues: Array<FieldUnion> = []
 ): AdminUpdatePayload {
   return {
     name: values.name,
     email: values.email,
     roles: values.roles.map((role) => role.value),
     password: values.password,
+    params: paramsValues.map((field) => ({
+      value: universalFieldUtils.getOutgoingValue(field),
+      name: field.config.name,
+    })),
   };
 }
 
 export function convertFormValuesToAdminCreationPayload(
-  values: FormValues
+  values: FormValues,
+  paramsValues: Array<FieldUnion> = []
 ): AdminCreationPayload {
   return {
-    ...convertFormValuesToAdminUpdatePayload(values),
+    ...convertFormValuesToAdminUpdatePayload(values, paramsValues),
   };
 }
 

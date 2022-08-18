@@ -1,8 +1,19 @@
 import { request, ResponseBody } from '@tager/admin-services';
+import {
+  FieldConfigUnion,
+  FieldShortType,
+  OutgoingValueUnion,
+} from '@tager/admin-dynamic-field';
 
 import { AdminType, RoleType, ScopeGroupsData } from '../typings/model';
 
 type SuccessData = { success: boolean };
+
+/** Fields */
+
+export function getFieldList(): Promise<ResponseBody<Array<FieldConfigUnion>>> {
+  return request.get({ path: '/admin/admins/fields' });
+}
 
 /** Roles */
 
@@ -63,6 +74,8 @@ export type AdminUpdatePayload = {
   email: string;
   roles: Array<number>;
   password: string;
+
+  params: Array<FieldShortType<OutgoingValueUnion>>;
 };
 
 export type AdminCreationPayload = AdminUpdatePayload;

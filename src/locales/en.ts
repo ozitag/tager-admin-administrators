@@ -37,4 +37,9 @@ export const EN = {
   roleList: 'Role List',
   roleForm: 'Role form',
   andMorePrivilege: 'and more {{count}} privilege...',
+
+  tabs: {
+    general: 'General',
+    params: 'Template',
+  },
 };
