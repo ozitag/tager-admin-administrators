@@ -79,7 +79,6 @@ import {defineComponent, onMounted} from "vue";
 
 import {useResourceDelete, useI18n} from '@tager/admin-services';
 import {Page} from "@tager/admin-layout";
-
 import {
   BaseButton,
   type ColumnDefinition,

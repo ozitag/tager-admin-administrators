@@ -14,7 +14,7 @@
         :loading="isRowDataLoading"
         :error-message="errorMessage"
     >
-      <template v-slot:cell(roles)="{ row }">
+      <template #cell(roles)="{ row }">
         <ul>
           <li v-for="role of row.roles" :key="role.id">
             {{ role.name }}
@@ -51,12 +51,12 @@ import {defineComponent, onMounted} from 'vue';
 import {useResourceDelete} from '@tager/admin-services';
 import {type ColumnDefinition, DataTable, BaseButton, DeleteIcon, EditIcon, useDataTable} from '@tager/admin-ui';
 import {useI18n} from "@tager/admin-services";
+import {Page} from "@tager/admin-layout";
 
 import {type AdminType} from '../../typings/model';
 import {deleteAdmin, getAdminList} from '../../services/requests';
 import {getAdminFormUrl} from '../../utils/paths';
 
-import {Page} from "@tager/admin-layout";
 
 export default defineComponent({
   name: 'AdminList',

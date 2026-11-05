@@ -20,10 +20,10 @@
     <template #footer>
       <FormFooter
           :back-href="backButtonUrl"
-          @submit="submitForm"
           :is-submitting="isSubmitting"
           :is-creation="isCreation"
           :can-create-another="isCreation"
+          @submit="submitForm"
       />
     </template>
   </Page>
@@ -37,17 +37,15 @@ import {
   ref,
   watch,
 } from 'vue';
+import {useRoute, useRouter} from "vue-router";
 
 import {Page} from "@tager/admin-layout";
-
 import {
   convertRequestErrorToMap, navigateBack,
   type Nullable,
   useResource, useToast,
 } from '@tager/admin-services';
-
 import {useI18n} from "@tager/admin-services";
-
 import {
   type OptionType,
   FormFooter,
@@ -71,7 +69,6 @@ import {
   convertScopeDataToOptions,
   type FormValues,
 } from './RoleForm.helpers';
-import {useRoute, useRouter} from "vue-router";
 
 export default defineComponent({
   name: 'RoleForm',
