@@ -49,10 +49,10 @@
 import {defineComponent, onMounted} from 'vue';
 
 import {useResourceDelete} from '@tager/admin-services';
-import {ColumnDefinition, DataTable, BaseButton, DeleteIcon, EditIcon, useDataTable} from '@tager/admin-ui';
+import {type ColumnDefinition, DataTable, BaseButton, DeleteIcon, EditIcon, useDataTable} from '@tager/admin-ui';
 import {useI18n} from "@tager/admin-services";
 
-import {AdminType} from '../../typings/model';
+import {type AdminType} from '../../typings/model';
 import {deleteAdmin, getAdminList} from '../../services/requests';
 import {getAdminFormUrl} from '../../utils/paths';
 

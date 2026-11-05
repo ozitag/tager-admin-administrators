@@ -1,4 +1,4 @@
-import { FieldShortType, IncomingValueUnion } from '@tager/admin-dynamic-field';
+import { type FieldShortType, type IncomingValueUnion } from '@tager/admin-dynamic-field';
 
 export type ScopeType = {
   readonly value: string;

@@ -89,7 +89,7 @@ import {
   useDataTable,
 } from "@tager/admin-ui";
 
-import {RoleType, ScopeType} from '../../typings/model';
+import {type RoleType, type ScopeType} from '../../typings/model';
 import {deleteRole, getRoleList} from '../../services/requests';
 import {getRoleFormUrl} from '../../utils/paths';
 
@@ -136,7 +136,7 @@ export default defineComponent({
 
     function getScopeGroupList(
         scopes: Array<ScopeType>
-    ): Array<{ module: string; scopes: ScopeType }> {
+    ): Array<{ module: string; scopes: Array<ScopeType> }> {
       const map = new Map();
       scopes.forEach((scope) => {
         const key = scope.module;

@@ -1,11 +1,11 @@
-import { request, ResponseBody } from '@tager/admin-services';
+import { request, type ResponseBody } from '@tager/admin-services';
 import {
-  FieldConfigUnion,
-  FieldShortType,
-  OutgoingValueUnion,
+  type FieldConfigUnion,
+  type FieldShortType,
+  type OutgoingValueUnion,
 } from '@tager/admin-dynamic-field';
 
-import { AdminType, RoleType, ScopeGroupsData } from '../typings/model';
+import { type AdminType, type RoleType, type ScopeGroupsData } from '../typings/model';
 
 type SuccessData = { success: boolean };
 

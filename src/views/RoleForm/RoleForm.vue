@@ -42,16 +42,16 @@ import {Page} from "@tager/admin-layout";
 
 import {
   convertRequestErrorToMap, navigateBack,
-  Nullable,
+  type Nullable,
   useResource, useToast,
 } from '@tager/admin-services';
 
 import {useI18n} from "@tager/admin-services";
 
 import {
-  OptionType,
+  type OptionType,
   FormFooter,
-  TagerFormSubmitEvent,
+  type TagerFormSubmitEvent,
   FormField, FormFieldMultiSelect
 } from '@tager/admin-ui';
 
@@ -61,7 +61,7 @@ import {
   getScopes,
   updateRole,
 } from '../../services/requests';
-import {RoleType, ScopeGroupsData} from '../../typings/model';
+import {type RoleType, type ScopeGroupsData} from '../../typings/model';
 import {getRoleFormUrl, getRoleListUrl} from '../../utils/paths';
 
 import {
@@ -69,7 +69,7 @@ import {
   convertFormValuesToRoleUpdatePayload,
   convertRoleToFormValues,
   convertScopeDataToOptions,
-  FormValues,
+  type FormValues,
 } from './RoleForm.helpers';
 import {useRoute, useRouter} from "vue-router";
 

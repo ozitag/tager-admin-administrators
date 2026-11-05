@@ -1,11 +1,11 @@
-import { Nullable, createId } from '@tager/admin-services';
-import { OptionType } from '@tager/admin-ui';
-import { FieldUnion, universalFieldUtils } from '@tager/admin-dynamic-field';
+import { type Nullable, createId } from '@tager/admin-services';
+import { type OptionType } from '@tager/admin-ui';
+import { type FieldUnion, universalFieldUtils } from '@tager/admin-dynamic-field';
 
-import { AdminType, RoleType } from '../../typings/model';
+import { type AdminType, type RoleType } from '../../typings/model';
 import {
-  AdminCreationPayload,
-  AdminUpdatePayload,
+  type AdminCreationPayload,
+  type AdminUpdatePayload,
 } from '../../services/requests';
 
 export type FormValues = {

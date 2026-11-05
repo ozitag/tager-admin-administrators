@@ -62,7 +62,7 @@ import {
   defineComponent,
   onMounted,
   ref,
-  SetupContext,
+  type SetupContext,
   watch,
 } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -72,30 +72,30 @@ import {
   convertRequestErrorToMap,
   navigateBack,
   notEmpty,
-  Nullable,
+  type Nullable,
   useResource,
   useToast,
 } from '@tager/admin-services';
 import {
-  OptionType,
+  type OptionType,
   FormFooter,
-  TagerFormSubmitEvent,
+  type TagerFormSubmitEvent,
   FormField,
   FormFieldMultiSelect,
-  TabType,
+  type TabType,
   TabList,
 } from '@tager/admin-ui';
 import { useI18n } from '@tager/admin-services';
 import {
   DynamicField,
-  FieldConfigUnion,
-  FieldShortType,
-  FieldUnion,
-  IncomingValueUnion,
+  type FieldConfigUnion,
+  type FieldShortType,
+  type FieldUnion,
+  type IncomingValueUnion,
   universalFieldUtils,
 } from '@tager/admin-dynamic-field';
 
-import { AdminType, RoleType } from '../../typings/model';
+import { type AdminType, type RoleType } from '../../typings/model';
 import {
   createAdmin,
   getAdmin,
@@ -110,7 +110,7 @@ import {
   convertFormValuesToAdminUpdatePayload,
   convertAdminToFormValues,
   convertRoleListToOptions,
-  FormValues,
+  type FormValues,
 } from './AdminForm.helpers';
 
 export default defineComponent({

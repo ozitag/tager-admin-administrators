@@ -1,10 +1,10 @@
-import { Nullable } from '@tager/admin-services';
-import { OptionType } from '@tager/admin-ui';
+import { type Nullable } from '@tager/admin-services';
+import { type OptionType } from '@tager/admin-ui';
 
-import { RoleType, ScopeGroupsData } from '../../typings/model';
+import { type RoleType, type ScopeGroupsData } from '../../typings/model';
 import {
-  RoleCreationPayload,
-  RoleUpdatePayload,
+  type RoleCreationPayload,
+  type RoleUpdatePayload,
 } from '../../services/requests';
 
 export type FormValues = {
