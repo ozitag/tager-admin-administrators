@@ -3,7 +3,7 @@ name: publish-package
 on:
   push:
     branches:
-      - develop
+      - master
   workflow_dispatch:
 
 permissions:
