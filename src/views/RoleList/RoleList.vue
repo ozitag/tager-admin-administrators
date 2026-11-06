@@ -12,7 +12,7 @@
         :column-defs="columnDefs"
         :row-data="rowData"
         :loading="isRowDataLoading"
-        :error-message="errorMessage"
+        :error-message="errorMessage ?? undefined"
     >
       <template #cell(scope)="{ row }">
           <span v-if="row.scopes.length === 0" class="no-scopes">
